@@ -3,14 +3,19 @@
 //  Імпортуй в нього функції із файлів pixabay-api.js та render-functions.js та викликай їх у відповідний момент.
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
-const gallery = document.querySelector('.gallery');
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
+
 import { getImagesByQuery } from './js/pixabay-api';
+
+import {
+  createGallery,
+  clearGallery,
+  showLoader,
+  hideLoader,
+} from './js/render-functions';
+
 const form = document.querySelector('.form');
 form.addEventListener('submit', handleSubmit);
-
-export function handleSubmit(event) {
+function handleSubmit(event) {
   event.preventDefault();
   const valueSearch = event.target.elements['search-text'].value
     .toLowerCase()
@@ -24,24 +29,29 @@ export function handleSubmit(event) {
     });
     return;
   }
+  clearGallery();
+  showLoader();
   getImagesByQuery(valueSearch)
     .then(data => {
       if (data.hits.length === 0) {
         iziToast.show({
           message:
             'Sorry, there are no images matching your search query. Please try again!',
-          color: 'red',
+          color: 'blue',
+          position: 'topCenter',
         });
         return;
       }
-      gallery.insertAdjacentHTML('beforeend', createGallery(data.hits));
+      createGallery(data.hits);
     })
     .catch(error => {
       iziToast.show({
         message: 'Error! Try again later',
-        color: 'red',
       });
-      console.error(error);
+      console.log(error);
     })
-    .finally(event.target.reset());
+    .finally(() => {
+      hideLoader();
+      event.target.reset();
+    });
 }

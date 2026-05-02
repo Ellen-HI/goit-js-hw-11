@@ -1,29 +1,43 @@
-// створи екземпляр SimpleLightbox
-// let gallery = new SimpleLightbox('.gallery a');
-// gallery.on('show.simplelightbox', function () {
-//   // Do something…
-// });
 // createGallery(images). Ця функція повинна приймати масив images, створювати HTML-розмітку для галереї, додавати її в контейнер галереї та викликати метод екземпляра SimpleLightbox refresh(). Нічого не повертає.
 // clearGallery(). Ця функція нічого не приймає та повинна очищати вміст контейнера галереї. Нічого не повертає.
 // showLoader(). Ця функція нічого не приймає, повинна додавати клас для відображення лоадера. Нічого не повертає.
 // hideLoader(). Ця функція нічого не приймає, повинна прибирати клас для відображення лоадера. Нічого не повертає.
-
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+const gallery = document.querySelector('.gallery');
+let simpleLight = new SimpleLightbox('.gallery a');
 export function createGallery(images) {
-  // images.map(({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => `
-  //     <div class="gallery">
-  //     <a href="images/image1.jpg"><img src="images/thumbs/thumb1.jpg" alt="" title=""></a>
-  //     <a href="images/image2.jpg"><img src="images/thumbs/thumb2.jpg" alt="" title="Beautiful Image"></a>
-  // </div>
-  // `
+  const newItem = images
+    .map(
+      ({
+        webformatURL,
+        largeImageURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) => `
+      <li class="gallery-item">
+      <a href="${largeImageURL}"><img class="img-item" src="${webformatURL}" alt="${tags}" width="360" height="200"/></a>
+      <div class="info">
+  <p class="info-text">Likes:<br>${likes}</p>
+  <p class="info-text">Views:<br>${views}</p>
+  <p class="info-text">Comments:<br>${comments}</p>
+  <p class="info-text">Downloads:<br>${downloads}</p>
+  </div>
+  </li> `
+    )
+    .join('');
+  gallery.insertAdjacentHTML('beforeend', newItem);
+  simpleLight.refresh();
 }
-
-// function createMarkup(arr) {
-//     return arr.map(({ date, day: { avgtemp_c, condition: { text, icon } } }) => `
-//         <li class="weather-card">
-//             <img src="${icon}" alt="${text}" class="weather-icon"/>
-//             <h2 class="weather-date">${date}</h2>
-//             <h3 class="weather-text">${text}</h3>
-//             <h3 class="temperature">${avgtemp_c}°C</h3>
-//         </li>
-//     `).join("");
-// }
+export function clearGallery() {
+  gallery.innerHTML = '';
+}
+export function showLoader() {
+  document.querySelector('.loader').classList.remove('hidden');
+}
+export function hideLoader() {
+  document.querySelector('.loader').classList.add('hidden');
+}

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { createGallery } from './render-functions';
 
 const URL = 'https://pixabay.com/api/';
 const API_KEY = '55674767-a2ab9f6f3f74198417133d166';
